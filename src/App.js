@@ -535,35 +535,35 @@ const Button = styled.button`
 `;
 
 const StartButton = styled(Button)`
-  background: #000000;
+  background: #00000000;
   color: white;
   // border: 2px solid #df605e;
-  border: 2px solid #31ff8c;
+  border: 2px solid #5878b1;
   
   &:hover {
-    background: #31ff8c;
-    border-color: #31ff8c;
+    background: #5878b1;
+    border-color: #5878b1;
     svg{
-      color: black !important;
+      color: #450f0f !important;
     }
   }
 `;
 
 const PauseButton = styled(Button)`
-  background: #000000;
+  background: #00000000;
   color: #000000;
   border: 2px solid #5878b1;
   
   &:hover {
     background: #5878b1;
     svg{
-      color: black !important;
+      color: #450f0f !important;
     }
   }
 `;
 
 const StopButton = styled(Button)`
-  background: #000000;
+  background: #00000000;
   color: white;
   border: 2px solid #ffffff;
   
@@ -571,13 +571,13 @@ const StopButton = styled(Button)`
     background: #ffffff;
     border-color: #ffffff;
     svg{
-      color: black !important;
+      color: #450f0f !important;
     }
   }
 `;
 
 const ResetButton = styled(Button)`
-  background: #000000;
+  background: #00000000;
   color: #000000;
   border: 2px solid #df605e;
   svg{
@@ -587,7 +587,7 @@ const ResetButton = styled(Button)`
     background: #df605e;
     border-color: #df605e;
     svg{
-      color: black !important;
+      color: #450f0f !important;
     }
   }
 `;
@@ -682,25 +682,16 @@ const ActionButton = styled.button`
   border-radius: 3px;
   transition: all 0.2s ease;
   
-  &:hover {
-    background: #f0f0f0;
-  }
+ 
 `;
 
 const DeleteButton = styled(ActionButton)`
   color: #dc3545;
-  
-  &:hover {
-    background: #f8d7da;
-  }
+
 `;
 
 const EditButton = styled(ActionButton)`
   color: #007bff;
-  
-  &:hover {
-    background: #d1ecf1;
-  }
 `;
 
 const PlayerName = styled.div`
@@ -1306,7 +1297,7 @@ function App() {
           <ButtonGroup>
             {!isRunning && (
             <StartButton onClick={startTimer} disabled={isRunning}>
-              <FaPlay color='#31ff8c'/>
+              <FaPlay color='#5878b1'/>
             </StartButton>
             )}
             {isRunning && (
