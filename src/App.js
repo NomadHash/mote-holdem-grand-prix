@@ -262,10 +262,12 @@ const SidebarToggle = styled.button`
   position: fixed;
   top: 20px;
   right: ${props => props.isOpen ? '320px' : '20px'};
-  background: #000000;
+  background: #00000047;
   color: white;
-  border: 2px solid #000000;
+  border: none;
+  outline: none;
   border-radius: 50%;
+  
   width: 50px;
   height: 50px;
   display: flex;
@@ -276,8 +278,8 @@ const SidebarToggle = styled.button`
   z-index: 1000;
   
   &:hover {
-    background: #333333;
-    border-color: #333333;
+    background: #33333369;
+    border-color: #33333369;
     transform: scale(1.1);
   }
 `;
@@ -348,9 +350,9 @@ const BottomSidebarToggle = styled.button`
   bottom: ${props => props.isOpen ? '82%' : '20px'};
   right: 0px;
   transform: translateX(-50%);
-  background: #000000;
+  background: #00000047;
   color: white;
-  border: 2px solid #000000;
+  border: none;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -360,10 +362,11 @@ const BottomSidebarToggle = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 1000;
+  outline: none;
   
   &:hover {
-    background: #333333;
-    border-color: #333333;
+    background: #33333369;
+    border-color: #33333369;
   }
 `;
 
