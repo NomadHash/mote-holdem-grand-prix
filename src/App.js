@@ -382,7 +382,7 @@ const RankingHeader = styled.div`
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 2px solid #ffffff;
+  border-bottom: 2px solid #2b2c2e;
 `;
 
 const RankingTitle = styled.h3`
@@ -621,7 +621,7 @@ const SettingTitle = styled.h3`
 const Input = styled.input`
   width: 100%;
   padding: 8px;
-  border: 2px solid #454545;
+  border: none;
   outline: none;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -711,16 +711,11 @@ const PlayerChips = styled.div`
 `;
 
 const AddPlayerButton = styled(Button)`
-  background: #df605e;
+  background: linear-gradient(88deg, #6e0909 0%, #2c50af 100%);
   color: white;
   margin-top: 10px;
   padding: 8px 16px;
   font-size: 0.9rem;
-  
-  &:hover {
-    background: #333333;
-    border-color: #333333;
-  }
 `;
 
 const GameEndButton = styled(Button)`
@@ -728,21 +723,21 @@ const GameEndButton = styled(Button)`
   top: 16px;
   right: 16px;
   background: #df605e;
-  color: #1f1213;
+  color: white;
   border: 2px solid #df605e;
   margin-top: 15px;
   padding: 10px 10px;
   font-size: 0.8rem;
-  width: 100px;
+  width: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
 const AddTournamentButton = styled.button`
-  background: #df605e;
+  background: linear-gradient(88deg, #6e0909 0%, #2c50af 100%);
   color: white;
-  border: 2px solid #df605e;
+  border:none;
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -755,6 +750,326 @@ const AddTournamentButton = styled.button`
   white-space: nowrap;
   
 
+`;
+
+const TableModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: ${props => props.isOpen ? 1 : 0};
+  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
+  transition: all 0.3s ease;
+`;
+
+const TableModalContent = styled.div`
+  background: linear-gradient(135deg, #000000 0%, #691616 100%);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 1200px;
+  height: 870px;
+  position: relative;
+  transform: ${props => props.isOpen ? 'scale(1)' : 'scale(0.8)'};
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+`;
+
+const TableModalCloseButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10001;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+`;
+
+const ModalPokerTable = styled.div`
+  position: relative;
+  width: 800px;
+  height: 400px;
+  background: #222222;
+  border: 6px solid #5c5c5c;
+  border-radius: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+  margin: 0 auto 40px auto;
+`;
+
+const ModalPlayerPosition = styled.div`
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: ${props => props.eliminated ? '#723130' : '#2b2c2e'};
+  border: 4px solid ${props => props.eliminated ? '#d64a48' : '#825797'};
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  }
+`;
+
+const ModalPositionName = styled.div`
+  font-size: 20px;
+  color: #ccc;
+  margin-bottom: 6px;
+`;
+
+const ModalTablePlayerName = styled.div`
+  font-size: 18px;
+  text-align: center;
+  line-height: 1;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const ModalDealerButton = styled.div`
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background: white;
+  border: 3px solid #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 10;
+`;
+
+const ModalBlindDot = styled.div`
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: ${props => props.color || '#fff'};
+  z-index: 1;
+`;
+
+const ModalBlindLabel = styled.div`
+  position: absolute;
+  font-size: 18px;
+  color: #fff;
+  font-weight: bold;
+  white-space: nowrap;
+  z-index: 1;
+`;
+
+const TableExpandButton = styled.button`
+  background: linear-gradient(88deg, #6e0909 0%, #2c50af 100%);
+  color: white;
+  outline: none;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 20px auto;
+  width: 100%;
+  justify-content: center;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+`;
+
+const ModalTimer = styled.div`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  min-width: 120px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+`;
+
+const ModalTimerDisplay = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  letter-spacing: 2px;
+  line-height: 1;
+`;
+
+const ModalLevelDisplay = styled.div`
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin: 0;
+  font-weight: bold;
+`;
+
+const ModalControlButtons = styled.div`
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 100;
+`;
+
+const ModalControlButton = styled.button`
+  padding: 8px 12px;
+  border: 2px solid;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 40px;
+  justify-content: center;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+`;
+
+const ModalStartButton = styled(ModalControlButton)`
+  background: #00000000;
+  color: #5878b1;
+  border-color: #5878b1;
+  
+  &:hover {
+    background: #5878b1;
+    color: white;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+const ModalPauseButton = styled(ModalControlButton)`
+  background: #00000000;
+  color: #5878b1;
+  border-color: #5878b1;
+  
+  &:hover {
+    background: #5878b1;
+    color: white;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+const ModalStopButton = styled(ModalControlButton)`
+  background: #00000000;
+  color: white;
+  border-color: #ffffff;
+  
+  &:hover {
+    background: #ffffff;
+    color: #000000;
+  }
+`;
+
+const ModalResetButton = styled(ModalControlButton)`
+  background: #00000000;
+  color: #df605e;
+  border-color: #df605e;
+  
+  &:hover {
+    background: #df605e;
+    color: white;
+  }
+`;
+
+const ModalLevelControls = styled.div`
+  position: absolute;
+  bottom: 32px;
+  right: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 100;
+`;
+
+const ModalLevelButton = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: white;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.1);
+  }
+  
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+  }
 `;
 
 function App() {
@@ -782,6 +1097,7 @@ function App() {
   const [bottomSidebarOpen, setBottomSidebarOpen] = useState(false);
   const [positionOffset, setPositionOffset] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
   const [tournamentResults, setTournamentResults] = useState(() => {
     // 로컬스토리지에서 데이터 불러오기
     const saved = localStorage.getItem('tournamentResults');
@@ -974,6 +1290,10 @@ function App() {
     }
   };
 
+  const formatNumber = (num) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
 
   const getSortedRankings = () => {
     return [...tournamentResults].sort((a, b) => b.points - a.points);
@@ -1056,6 +1376,26 @@ function App() {
       document.removeEventListener('msfullscreenchange', handleFullscreenChange);
     };
   }, []);
+
+  // 스페이스바 키보드 이벤트 리스너
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      // 스페이스바가 눌렸고, 입력 필드에 포커스가 없을 때만 실행
+      if (event.code === 'Space' && event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+        event.preventDefault(); // 스크롤 방지
+        const activePlayers = players.filter(p => !p.eliminated);
+        if (activePlayers.length > 1) {
+          rotatePositions();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [players]);
 
   const currentBlinds = blindLevels[currentLevel - 1];
 
@@ -1254,18 +1594,200 @@ function App() {
         )}
         </div>
       </PokerTable>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start',marginBottom: '42px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: '2px', gap: '8px' }}>
       {activePlayers.length > 1 && (
-          <GameEndButton onClick={rotatePositions}>
-            <div style={{ fontSize: '0.8rem' }}>Game End</div>
-          </GameEndButton>
+          <>
+            <GameEndButton onClick={rotatePositions}>
+            <FaRedo size={12}/>
+              <div style={{ fontSize: '0.8rem' }}>포지션 회전</div>
+            </GameEndButton>
+            <div style={{
+              color: '#cccccc',
+              fontSize: '0.7rem',
+              textAlign: 'center',
+              opacity: 0.7
+            }}>
+              💡 스페이스바로 포지션 회전
+            </div>
+          </>
         )}
+        <TableExpandButton onClick={() => setIsTableModalOpen(true)}>
+            <FaExpand /> 테이블 확대 하기
+          </TableExpandButton>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start',height: '73%' }}>
       <img src="/hand_ranking.webp" alt="MGP Logo" style={{ height: '100%'}}/>
       </div>
       </>
       
+    );
+  };
+
+  const renderModalPokerTable = () => {
+    const activePlayers = players.filter(p => !p.eliminated);
+    const positions = getPositions(activePlayers.length);
+    const tableWidth = 800; // ModalPokerTable width
+    const tableHeight = 400; // ModalPokerTable height
+    const playerPositionDiameter = 100; // ModalPlayerPosition width/height
+    const playerPositionRadius = playerPositionDiameter / 2;
+    const dealerButtonDiameter = 30; // ModalDealerButton width/height
+    const dealerButtonRadius = dealerButtonDiameter / 2;
+    
+    // 테이블의 중심 좌표
+    const centerX = tableWidth / 2;
+    const centerY = tableHeight / 2;
+  
+    // 테이블 테두리의 장반경 (x축)과 단반경 (y축)
+    const ellipseRadiusX = tableWidth / 2 - 6; // 테이블 border 두께 6px 고려
+    const ellipseRadiusY = tableHeight / 2 - 6; // 테이블 border 두께 6px 고려
+  
+    // 딜러 버튼과 플레이어 포지션 사이의 간격
+    const dealerButtonOffset = 8; // 딜러 버튼이 플레이어 포지션 테두리에서 얼마나 떨어질지 조정
+
+    // 블라인드 점과 레이블이 플레이어 포지션 안쪽으로 얼마나 떨어질지
+    const blindOffset = 70; 
+
+    return (
+      <ModalPokerTable>
+        {activePlayers.map((player, index) => {
+          const totalPlayers = activePlayers.length;
+          const adjustedIndex = (index - positionOffset + totalPlayers) % totalPlayers;
+          const angleRad = ((index * (360 / totalPlayers)) - 90) * (Math.PI / 180); // 물리적 위치는 원래 index 사용
+          
+          const px = centerX + ellipseRadiusX * Math.cos(angleRad);
+          const py = centerY + ellipseRadiusY * Math.sin(angleRad);
+          
+          const currentPositionName = positions[adjustedIndex]; // 포지션 텍스트만 조정된 index 사용
+
+          return (
+            <ModalPlayerPosition
+              key={player.id}
+              eliminated={player.eliminated}
+              style={{
+                left: px - playerPositionRadius,
+                top: py - playerPositionRadius,
+              }}
+              onClick={() => eliminatePlayer(player.id)}
+            >
+              <ModalPositionName>{currentPositionName}</ModalPositionName>
+              <ModalTablePlayerName>{player.name}</ModalTablePlayerName>
+            </ModalPlayerPosition>
+          );
+        })}
+        
+        {activePlayers.length > 0 && (
+          () => {
+            const dealerIndex = getDealerIndex(activePlayers.length);
+            const totalPlayers = activePlayers.length;
+            const adjustedDealerIndex = (dealerIndex + positionOffset) % totalPlayers;
+            const dealerAngleRad = ((adjustedDealerIndex * (360 / totalPlayers)) - 90) * (Math.PI / 180);
+
+            const dealerPx = centerX + ellipseRadiusX * Math.cos(dealerAngleRad);
+            const dealerPy = centerY + ellipseRadiusY * Math.sin(dealerAngleRad);
+
+            const dealerBtnOffsetX = (playerPositionRadius + dealerButtonRadius + dealerButtonOffset) * Math.cos(dealerAngleRad);
+            const dealerBtnOffsetY = (playerPositionRadius + dealerButtonRadius + dealerButtonOffset) * Math.sin(dealerAngleRad);
+
+            return (
+              <ModalDealerButton
+                style={{
+                  left: dealerPx + dealerBtnOffsetX - dealerButtonRadius,
+                  top: dealerPy + dealerBtnOffsetY - dealerButtonRadius,
+                }}
+              >
+                D
+              </ModalDealerButton>
+            );
+          }
+        )()}
+
+        {/* 블라인드 점과 레이블 표시 */}
+        {activePlayers.length > 0 && (
+          <>
+            {/* SB 위치 */}
+            {(() => {
+               const totalPlayers = activePlayers.length;
+               const sbIndexInPositions = positions.indexOf('SB') !== -1 ? positions.indexOf('SB') : positions.indexOf('SB(BTN)');
+               if (sbIndexInPositions === -1) return null;
+
+               const sbPlayerIndex = (sbIndexInPositions + positionOffset) % totalPlayers;
+               const sbAngleRad = ((sbPlayerIndex * (360 / totalPlayers)) - 90) * (Math.PI / 180);
+
+              const sbDotX = centerX + (ellipseRadiusX - blindOffset) * Math.cos(sbAngleRad);
+              const sbDotY = centerY + (ellipseRadiusY - blindOffset) * Math.sin(sbAngleRad);
+
+              return (
+                <>
+                  <ModalBlindDot 
+                    color="#4aa4e6" 
+                    style={{ 
+                      left: sbDotX - 6, 
+                      top: sbDotY - 6 
+                    }} 
+                  />
+                  <ModalBlindLabel 
+                    style={{ 
+                      left: sbDotX + 18,
+                      top: sbDotY - 18 
+                    }}
+                  >
+                    0.5
+                  </ModalBlindLabel>
+                </>
+              );
+            })()}
+
+            {/* BB 위치 */}
+            {(() => {
+               const totalPlayers = activePlayers.length;
+               const bbIndexInPositions = positions.indexOf('BB');
+               if (bbIndexInPositions === -1) return null;
+
+               const bbPlayerIndex = (bbIndexInPositions + positionOffset) % totalPlayers;
+               const bbAngleRad = ((bbPlayerIndex * (360 / totalPlayers)) - 90) * (Math.PI / 180);
+
+              const bbDotX = centerX + (ellipseRadiusX - blindOffset) * Math.cos(bbAngleRad);
+              const bbDotY = centerY + (ellipseRadiusY - blindOffset) * Math.sin(bbAngleRad);
+
+              return (
+                <>
+                  <ModalBlindDot 
+                    color="#1a73e8" 
+                    style={{ 
+                      left: bbDotX - 6, 
+                      top: bbDotY - 6 
+                    }} 
+                  />
+                  <ModalBlindLabel 
+                    style={{ 
+                      left: bbDotX + 18,
+                      top: bbDotY - 10 
+                    }}
+                  >
+                    1
+                  </ModalBlindLabel>
+                </>
+              );
+            })()}
+          </>
+        )}
+
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Logo src="/logo_.png" alt="MGP Logo" style={{ height: '100px'}}/>
+          </div>
+          {players.length === 0 && (
+            <div style={{
+              textAlign: 'center',
+              color: '#8b8b8b',
+              fontSize: '1.2rem',
+              marginTop: '20px'
+            }}>
+              플레이어를 추가하면<br/>테이블에 표시됩니다
+            </div>
+          )}
+        </div>
+      </ModalPokerTable>
     );
   };
 
@@ -1344,7 +1866,7 @@ function App() {
       </BottomSidebarToggle>
 
               <LeftSidebar isOpen={leftSidebarOpen}>
-          <SettingTitle><FaUsers />Play Table</SettingTitle>
+          <SettingTitle><FaUsers />포커 테이블</SettingTitle>
           <div style={{ 
             marginTop: '56px',
             padding: '8px 12px', 
@@ -1365,7 +1887,7 @@ function App() {
               color: '#cccccc', 
               fontSize: '0.9rem'
             }}>
-              Active Players
+              활성 플레이어
             </div>
           </div>
           {renderPokerTable()}
@@ -1397,41 +1919,41 @@ function App() {
             {isFullscreen ? <FaCompress size={16} /> : <FaExpand size={16} />}
           </button>
           <SettingCard>
-            <SettingTitle><FaUsers /> Player Management</SettingTitle>
-            <Label>New Player Name:</Label>
+            <SettingTitle><FaUsers /> 플레이어 관리</SettingTitle>
+            <Label>유저명</Label>
             <Input
               type="text"
               value={newPlayerName}
               onChange={(e) => setNewPlayerName(e.target.value)}
               placeholder="Enter Player Name"
             />
-            <Label>Starting Chips:</Label>
+            <Label>바이인</Label>
             <Input
               type="number"
               value={startingChips}
               onChange={(e) => setStartingChips(parseInt(e.target.value) || 0)}
             />
             <AddPlayerButton onClick={addPlayer}>
-              <FaUsers /> Add Player
+              <FaUsers /> 플레이어 추가
             </AddPlayerButton>
           </SettingCard>
 
           <SettingCard>
-            <SettingTitle><FaTrophy /> Tournament Settings</SettingTitle>
-            <Label>Level Duration (seconds):</Label>
+            <SettingTitle><FaTrophy /> 토너먼트 설정</SettingTitle>
+            <Label>레벨 지속 시간 (초):</Label>
             <Input
               type="number"
               value={levelDuration}
               onChange={(e) => setLevelDuration(parseInt(e.target.value) || 600)}
             />
             <p style={{ fontSize: '0.8rem', color: '#666' }}>
-              {players.filter(p => !p.eliminated).length} players are active.
+              {players.filter(p => !p.eliminated).length} 플레이어가 활성화되어 있습니다.
             </p>
           </SettingCard>
         </SettingsSection>
 
         <PlayersSection>
-          <SettingTitle><FaUsers /> Player List</SettingTitle>
+          <SettingTitle><FaUsers /> 플레이어 목록</SettingTitle>
           {players.length === 0 ? (
             <div style={{ 
               textAlign: 'center', 
@@ -1442,7 +1964,7 @@ function App() {
               borderRadius: '8px',
               border: '2px dashed #525252'
             }}>
-              No players.<br/>Please add players in the "Player Management" section.
+              플레이어가 없습니다.<br/>"플레이어 관리" 섹션에서 플레이어를 추가해주세요.
             </div>
           ) : (
             <PlayersGrid>
@@ -1464,14 +1986,14 @@ function App() {
                             updatePlayerName(player.id, newName.trim());
                           }
                         }}
-                        title="Change Name"
+                        title="이름 변경"
                       >
                         <FaEdit size={12} color='#ffffff'/>
                       </EditButton>
                       <DeleteButton 
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (window.confirm(`Are you sure you want to delete ${player.name}?`)) {
+                          if (window.confirm(`${player.name}을 삭제하시겠습니까?`)) {
                             deletePlayer(player.id);
                           }
                         }}
@@ -1484,7 +2006,7 @@ function App() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     {player.eliminated ? null : (
                   <PlayerChips>
-                    Chips: <input
+                    칩 :  <input
                       disabled={player.eliminated}
                       type="number"
                       value={player.chips}
@@ -1504,14 +2026,14 @@ function App() {
                   <div 
                     style={{ 
                       fontSize: '0.8rem', 
-                      color: player.eliminated ? '#ffffff' : '#449556',
+                      color: player.eliminated ? '#ffffff' : '#83ff6f',
                       marginTop: '5px',
                       cursor: 'pointer',
                       fontWeight: 'bold'
                     }}
                     onClick={() => eliminatePlayer(player.id)}
                   >
-                    {player.eliminated ? 'Eliminated' : 'Active'}
+                    {player.eliminated ? '탈락' : '활성'}
                   </div>
                   </div>
                 </PlayerCard>
@@ -1525,7 +2047,7 @@ function App() {
         <RankingTable>
           <RankingHeader>
             <RankingTitle>
-              <FaTrophy /> Tournament Ranking
+              <FaTrophy /> 토너먼트 순위
             </RankingTitle>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
@@ -1605,7 +2127,7 @@ function App() {
                 style={{ margin: 0 }}
               />
               <AddTournamentButton onClick={addTournamentResult}>
-                Point Add
+                포인트 추가
               </AddTournamentButton>
             </div>
           </div>
@@ -1630,7 +2152,25 @@ function App() {
                 />
               </PlayerCell>
               <PointsCell>
-              {player.points}
+                <input
+                  type="text"
+                  value={formatNumber(player.points)}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/,/g, '');
+                    const numValue = parseInt(value) || 0;
+                    updateTournamentPlayerPoints(player.id, numValue);
+                  }}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: 'inherit',
+                    width: '80px',
+                    outline: 'none',
+                    textAlign: 'right'
+                  }}
+                />
                 {' '}pts
               </PointsCell>
 
@@ -1658,6 +2198,129 @@ function App() {
           ))}
         </RankingTable>
       </BottomSidebar>
+
+      {/* 테이블 모달 */}
+      <TableModalOverlay 
+        isOpen={isTableModalOpen}
+        onClick={() => setIsTableModalOpen(false)}
+      >
+        <TableModalContent 
+          isOpen={isTableModalOpen}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <TableModalCloseButton onClick={() => setIsTableModalOpen(false)}>
+            <FaTimes size={20} />
+          </TableModalCloseButton>
+          
+          <div style={{ textAlign: 'center', marginBottom: '120px' }}>
+            <h2 style={{ 
+              color: 'white', 
+              fontSize: '2rem', 
+              margin: '0 0 10px 0',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+            }}>
+              포커 테이블
+            </h2>
+            <div style={{ 
+              color: '#83ff6f', 
+              fontSize: '1.2rem', 
+              fontWeight: 'bold',
+              marginBottom: '20px'
+            }}>
+              {players.filter(p => !p.eliminated).length}명의 활성 플레이어
+            </div>
+          </div>
+          
+          {renderModalPokerTable()}
+          
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            justifyContent: 'center', 
+            alignItems: 'center',
+            marginTop: '100px',
+            gap: '20px'
+          }}>
+            {players.filter(p => !p.eliminated).length > 1 && (
+              <>
+                <button
+                  onClick={rotatePositions}
+                  style={{
+                    background: '#df605e',
+                    color: 'white',
+                    border: '2px solid #df605e',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                >
+                  <FaRedo /> 포지션 회전
+                </button>
+                <div style={{
+                  color: '#cccccc',
+                  fontSize: '0.9rem',
+                  textAlign: 'center',
+                  opacity: 0.8
+                }}>
+                  💡 스페이스바를 눌러서 포지션을 회전할 수 있습니다
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* 모달 컨트롤 버튼들 */}
+          <ModalControlButtons>
+            {!isRunning && (
+              <ModalStartButton onClick={startTimer} disabled={isRunning}>
+                <FaPlay size={12} />
+              </ModalStartButton>
+            )}
+            {isRunning && (
+              <ModalPauseButton onClick={pauseTimer} disabled={!isRunning}>
+                <FaPause size={12} />
+              </ModalPauseButton>
+            )}
+            <ModalStopButton onClick={stopTimer}>
+              <FaStop size={12} />
+            </ModalStopButton>
+            <ModalResetButton onClick={resetTimer}>
+              <FaRedo size={12} />
+            </ModalResetButton>
+          </ModalControlButtons>
+
+          {/* 모달 레벨 컨트롤 */}
+          <ModalLevelControls>
+            <ModalLevelButton 
+              onClick={increaseLevel}
+              disabled={currentLevel >= blindLevels.length}
+              title="레벨 올리기"
+            >
+              <FaChevronUp />
+            </ModalLevelButton>
+            <ModalLevelButton 
+              onClick={decreaseLevel}
+              disabled={currentLevel <= 1}
+              title="레벨 내리기"
+            >
+              <FaChevronDown />
+            </ModalLevelButton>
+          </ModalLevelControls>
+
+          {/* 모달 타이머 */}
+          <ModalTimer>
+            <ModalTimerDisplay>{formatTime(timeLeft)}</ModalTimerDisplay>
+            <ModalLevelDisplay>
+              LEVEL {currentLevel} - SB: {currentBlinds.smallBlind} / BB: {currentBlinds.bigBlind}
+            </ModalLevelDisplay>
+          </ModalTimer>
+        </TableModalContent>
+      </TableModalOverlay>
     </AppContainer>
   );
 }
